@@ -1,0 +1,48 @@
+/* Estilos generales para todos los botones */
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Botón primario - azul pastel */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.btn-primary:hover {
+  background-color: #91b8df;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+/* Botón secundario - verde menta */
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background-color: #a3d6b9;
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+/* Botón de acción o alerta - coral claro */
+.btn-accent {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.btn-accent:hover {
+  background-color: #f7b1b1;
+}
