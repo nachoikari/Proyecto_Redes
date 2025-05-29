@@ -4,7 +4,7 @@ const Button = ({buttonText, onClick, styles }) => {
     const onclick = onClick;
     const style = styles;
     return (
-        <button onClick={onclick} className={style + ".css"}>
+        <button onClick={onclick} className={style}>
             {buttonlabel}
         </button>
     );

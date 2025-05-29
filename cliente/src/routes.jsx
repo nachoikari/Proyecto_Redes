@@ -9,7 +9,7 @@ function Main() {
   return (
     <Routes>
       <Route path="/" element={<PageLogin setUsuarioLogueado={setUsuarioLogueado} />} />
-      <Route path="/menu" element={<MenuPage usuario={usuarioLogueado} />} />
+      <Route path="/menu" element={<MenuPage usuario={usuarioLogueado} setUserLogueado={setUsuarioLogueado} />} />
     </Routes>
   );
 }

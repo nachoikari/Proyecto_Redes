@@ -46,3 +46,40 @@
 .btn-accent:hover {
   background-color: #f7b1b1;
 }
+
+/* Botones generales del menú */
+.btn-menu {
+  background-color: #a4c2f4; /* azul pastel */
+  color: #1c1c1c; /* texto oscuro */
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-menu:hover {
+  background-color: #92b8e6;
+}
+
+/* Botón de cerrar sesión */
+.btn-logout {
+  background-color: #f8b4b4; /* coral suave */
+  color: #5b0000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+  background-color: #f49c9c;
+}
+

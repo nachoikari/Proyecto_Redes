@@ -27,7 +27,7 @@ const PageLogin = ({setUsuarioLogueado }) =>{
         }
 
         setUsuarioLogueado(data.usuario);
-        console.log(data.usuario);
+        //console.log(data.usuario);
         navigate('/menu');
 
     } catch (error) {
