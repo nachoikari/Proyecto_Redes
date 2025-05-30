@@ -1,21 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/index.js';
-import './MenuPage.css'; // si querés darle estilo
+import './MenuPage.css'; 
 
 const MenuPage = ({ usuario, setUserLogueado }) => {
     const navigate = useNavigate();
 
     const changeToSinpePage = () => {
-        //navigate('/sinpe');
+        navigate('/sinpe');
     };
 
     const changeToHistorialPage = () => {
-        //navigate('/historial');
+        navigate('/historial');
     };
 
     const handleLogout = () => {
-        //navigate('/'); // podrías también hacer setUsuarioLogueado(null) si lo pasás por props
-    
+        setUserLogueado(null);
+        navigate('/'); 
     };
 
     return (
