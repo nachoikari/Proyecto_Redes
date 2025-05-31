@@ -8,19 +8,24 @@ const SinpePage = ({ usuario, volverAlMenu }) => {
   const [mensaje, setMensaje] = useState('');
 
   const handleEnviar = async () => {
+      if (!destinatario || !monto || parseFloat(monto) <= 0 || destinatario.length !== 8) {
+      setMensaje("⚠️ Verifique que todos los campos estén correctos");
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/sinpe', {
+      const response = await fetch('http://localhost:5000/api/enviar-sinpe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          origen: usuario.numero,
-          destino: destinatario,
+          num_emisor: usuario.numero,
+          num_destino: destinatario,
           monto,
           detalle
         })
       });
       const data = await response.json();
-      setMensaje(data.status === "OK" ? "✅ Transacción exitosa" : "❌ Transacción fallida");
+      setMensaje(data.status === "OK" ? "✅ Transacción exitosa" : "❌ " + data.message);
     } catch (error) {
       setMensaje("❌ Error de conexión con el servidor");
     }

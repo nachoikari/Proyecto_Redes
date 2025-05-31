@@ -3,12 +3,12 @@ from flask_cors import CORS
 
 # Importar blueprint del controlador de login
 from lib.controllers.LoginController import login_bp
-
+from lib.controllers.EnviarTransaccion import sinpe_bp
 app = Flask(__name__)
-CORS(app)  # Permite peticiones desde React u otros orígenes
 
+CORS(app, origins="*", allow_headers="*", supports_credentials=True)
 # Registrar los blueprints (rutas)
 app.register_blueprint(login_bp, url_prefix='/api')
-
+app.register_blueprint(sinpe_bp, url_prefix='/api')
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
