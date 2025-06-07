@@ -26,19 +26,19 @@ const MenuPage = ({ usuario, setUserLogueado }) => {
 
             <div className="buttons-display">
                 <Button
-                buttonText="Realizar SINPE"
-                onClick={changeToSinpePage}
-                styles="btn-menu"
+                    buttonText="Realizar SINPE"
+                    onClick={changeToSinpePage}
+                    styles="btn-menu"
                 />
                 <Button
-                buttonText="Historial"
-                onClick={changeToHistorialPage}
-                styles="btn-menu"
+                    buttonText="Historial"
+                    onClick={changeToHistorialPage}
+                    styles="btn-menu"
                 />
                 <Button
-                buttonText="Cerrar sesión"
-                onClick={handleLogout}
-                styles="btn-logout"
+                    buttonText="Cerrar sesión"
+                    onClick={handleLogout}
+                    styles="btn-logout"
                 />
             </div>
         </div>

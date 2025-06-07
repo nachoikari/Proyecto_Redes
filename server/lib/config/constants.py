@@ -1,3 +1,3 @@
 PREFIJO_LOCAL = 96
-KEY_EMISOR = 1
-API_KEY_URL = "https://localhost:3001/get_api_key/"
+KEY_EMISOR = "BN1251"
+API_KEY_URL = "https://192.168.0.10:3001/get_api_key/"

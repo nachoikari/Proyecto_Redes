@@ -22,10 +22,9 @@ def enviar_sinpe():
         monto = float(data.get('monto', 0))
         num_destino = data.get('num_destino')
         detalle = data.get('detalle', 'Sin detalle')
-        key_emisor = data.get('key_emisor', '')
         fecha = datetime.datetime.now().strftime("%Y-%m-%d")
 
-        if not all([num_emisor, num_destino, monto, key_emisor]):
+        if not all([num_emisor, num_destino, monto]):
             return jsonify({"status": "ERROR", "message": "Faltan campos requeridos"}), 400
 
         prefijo_destino = int(num_destino[:2])
@@ -76,23 +75,29 @@ def enviar_sinpe():
                 # Paso 1: Obtener información del banco destino
                 api_key_url = f"{API_KEY_URL}{prefijo_destino}"
                 response = requests.get(api_key_url, verify=False)
+                print("Respuesta api")
+                print(api_key_url)
+                print(response)
                 if response.status_code != 200:
                     return jsonify({"status": "ERROR", "message": "No se pudo obtener información del banco destino"}), 400
 
                 banco_info = response.json()
+                print("Informacion del banco")
+                print(banco_info)
                 endpoint_url = f"https://{banco_info['ip']}:{banco_info['puerto']}/{banco_info['endpoint']}"
 
+                print("Banco a enviar endpoint")
+                print(endpoint_url)
                 # Paso 2: Preparar cuerpo
                 body = {
                     "num_emisor": num_emisor,
-                    "key_emisor": key_emisor,
+                    "key_emisor": KEY_EMISOR,
                     "num_receptor": num_destino,
                     "monto": monto,
                     "detalle": detalle,
                     "fecha": fecha
                 }
-
-                # Paso 3: Enviar solicitud
+                
                 response_ext = requests.post(endpoint_url, json=body, verify=False)
                 respuesta_receptor = response_ext.json()
 

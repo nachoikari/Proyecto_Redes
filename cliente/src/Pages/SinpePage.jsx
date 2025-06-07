@@ -7,14 +7,16 @@ const SinpePage = ({ usuario, volverAlMenu }) => {
   const [detalle, setDetalle] = useState('');
   const [mensaje, setMensaje] = useState('');
 
+
   const handleEnviar = async () => {
-      if (!destinatario || !monto || parseFloat(monto) <= 0 || destinatario.length !== 8) {
+  
+    if (!destinatario || !monto || parseFloat(monto) <= 0 || destinatario.length !== 8) {
       setMensaje("⚠️ Verifique que todos los campos estén correctos");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/enviar-sinpe', {
+      const response = await fetch('https://localhost:5000/api/enviar-sinpe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -24,7 +26,10 @@ const SinpePage = ({ usuario, volverAlMenu }) => {
           detalle
         })
       });
+      console.log("La respuesta del fetch a back", response);
       const data = await response.json();
+      console.log("La respuesta del fetch a back", data);
+
       setMensaje(data.status === "OK" ? "✅ Transacción exitosa" : "❌ " + data.message);
     } catch (error) {
       setMensaje("❌ Error de conexión con el servidor");

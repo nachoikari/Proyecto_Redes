@@ -3,7 +3,7 @@ from flask_cors import cross_origin
 from lib.config.db_config import db_config
 from lib.utils.db_utils import get_connection, close_connection, get_usuario_monto, actualizar_monto, get_id_usuario, registrar_log_transaccion
 from datetime import datetime
-
+from lib.config.constants import PREFIJO_LOCAL, API_KEY_URL, KEY_EMISOR
 sinpe_recibir_bp = Blueprint('recibirSinpe', __name__)
 
 @sinpe_recibir_bp.route('/recibir-sinpe', methods=['POST'])
@@ -30,6 +30,14 @@ def recibir_sinpe():
         except ValueError:
             return jsonify({"status": "ERROR", "message": "Formato de fecha inválido"}), 400
         
+        prefijo_emisor = int(num_emisor[:2])
+        
+        api_key_url = f"{API_KEY_URL}{prefijo_emisor}"
+        
+        response = requests.get(api_key_url, verify=False)
+        
+        if response.status_code != 200:
+             return jsonify({"status": "ERROR", "message": "No se pudo obtener información del banco destino"}), 400
         connection, cursor = get_connection()
 
         receptor = get_usuario_monto(cursor, num_destino)
