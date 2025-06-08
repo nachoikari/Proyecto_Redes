@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 import mysql.connector
 from lib.config.db_config import db_config
-from lib.config.constants import PREFIJO_LOCAL, API_KEY_URL
+from lib.config.constants import PREFIJO_LOCAL, API_KEY_URL, KEY_EMISOR
 import requests
 import datetime
 from lib.utils.db_utils import get_connection, close_connection, get_usuario_monto, actualizar_monto, get_id_usuario, registrar_log_transaccion
@@ -14,19 +14,49 @@ sinpe_enviar_bp = Blueprint('enviarSinpe', __name__)
 def enviar_sinpe():
     try:
         data = request.get_json()
-        print("=====================")
+        print("===== PETICIÓN RECIBIDA EN /enviar-sinpe =====")
+        print("JSON recibido:")
         print(data)
-        print("=====================")
+        print("==============================================")
 
         num_emisor = data.get('num_emisor')
         monto = float(data.get('monto', 0))
         num_destino = data.get('num_destino')
         detalle = data.get('detalle', 'Sin detalle')
         fecha = datetime.datetime.now().strftime("%Y-%m-%d")
+        print("Emisor:", data.get('num_emisor'))
+        print("Receptor:", data.get('num_destino'))
+        print("Monto:", data.get('monto'))
+        print("Detalle:", data.get('detalle'))
+        required_fields = ['num_emisor',  'num_destino', 'detalle',  'monto']
+        missing = [f for f in required_fields if f not in data]
+        if missing:
+            return jsonify({
+                "status": "ERROR",
+                "message": f"Faltan campos: {', '.join(missing)}"
+            }), 400
 
-        if not all([num_emisor, num_destino, monto]):
-            return jsonify({"status": "ERROR", "message": "Faltan campos requeridos"}), 400
+        # Validar strings
+        for field in ['num_emisor',  'num_destino', 'detalle']:
+            if not isinstance(data[field], str):
+                return jsonify({
+                    "status": "ERROR",
+                    "message": f"El campo '{field}' debe ser una cadena"
+                }), 400
 
+        # Validar monto
+        try:
+            monto = float(data['monto'])
+            if monto <= 0:
+                return jsonify({
+                    "status": "ERROR",
+                    "message": "El monto debe ser mayor que cero"
+                }), 400
+        except (ValueError, TypeError):
+            return jsonify({
+                "status": "ERROR",
+                "message": "El campo 'monto' debe ser un número válido"
+            }), 400
         prefijo_destino = int(num_destino[:2])
 
         if PREFIJO_LOCAL == prefijo_destino:
