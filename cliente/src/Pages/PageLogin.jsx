@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './PageLogin.css'; 
 import { Button, TextField } from '../components/index.js';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from "../constants";
 const PageLogin = ({setUsuarioLogueado }) =>{
     const [cedula, setCedula] = useState('');
     const [password, setPassword] = useState('');
@@ -11,7 +12,7 @@ const PageLogin = ({setUsuarioLogueado }) =>{
 
     const handleLogin = async () => {
     try {
-        const response = await fetch('https://localhost:5000/api/login', {
+        const response = await fetch(`${BASE_URL}/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

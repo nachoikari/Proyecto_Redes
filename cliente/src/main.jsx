@@ -5,7 +5,7 @@ import RoutesApp from './routes'; // o Main.jsx, como lo tengas
 import "./index.css"
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter> {}
+    <BrowserRouter>
       <RoutesApp />
     </BrowserRouter>
   </React.StrictMode>

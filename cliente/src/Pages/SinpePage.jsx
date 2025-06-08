@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { TextField, Button } from '../components';
 import "./SinpePage.css";
-const SinpePage = ({ usuario, volverAlMenu }) => {
+import { BASE_URL } from "../constants";
+const SinpePage = ({ usuario, volverAlMenu,setUsuarioLogueado }) => {
   const [destinatario, setDestinatario] = useState('');
   const [monto, setMonto] = useState('');
   const [detalle, setDetalle] = useState('');
@@ -9,14 +10,12 @@ const SinpePage = ({ usuario, volverAlMenu }) => {
 
 
   const handleEnviar = async () => {
-  
     if (!destinatario || !monto || parseFloat(monto) <= 0 || destinatario.length !== 8) {
       setMensaje("⚠️ Verifique que todos los campos estén correctos");
       return;
     }
-
     try {
-      const response = await fetch('https://localhost:5000/api/enviar-sinpe', {
+      const response = await fetch(`${BASE_URL}/enviar-sinpe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -26,12 +25,28 @@ const SinpePage = ({ usuario, volverAlMenu }) => {
           detalle
         })
       });
-      console.log("La respuesta del fetch a back", response);
       const data = await response.json();
-      console.log("La respuesta del fetch a back", data);
+      console.log("Respuesta del backend:", data);
 
-      setMensaje(data.status === "OK" ? "✅ Transacción exitosa" : "❌ " + data.message);
+      if (response.status === 200) {
+        // Obtener datos actualizados del usuario desde el backend
+        try {
+          const userRes = await fetch(`${BASE_URL}/usuario/${usuario.numero}`);
+          const userData = await userRes.json();
+          if (userRes.status === 200) {
+            setMensaje("✅ Transacción exitosa");
+            setUsuarioLogueado(userData.usuario);
+          } else {
+            console.warn("No se pudo actualizar el saldo del usuario.");
+          }
+        } catch (fetchError) {
+          console.error("Error al actualizar datos del usuario:", fetchError);
+        }
+      } else {
+        setMensaje("❌ " + (data.message || "Ocurrió un error"));
+      }
     } catch (error) {
+      console.error(error);
       setMensaje("❌ Error de conexión con el servidor");
     }
   };
