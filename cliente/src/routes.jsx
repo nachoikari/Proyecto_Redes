@@ -17,7 +17,7 @@ function Main() {
       <Route path="/" element={<PageLogin setUsuarioLogueado={setUsuarioLogueado} />} />
       <Route path="/menu" element={<MenuPage usuario={usuarioLogueado} setUserLogueado={setUsuarioLogueado} />} />
       <Route path="/sinpe" element={<SinpePage usuario={usuarioLogueado} volverAlMenu={volverAlMenu} setUsuarioLogueado={setUsuarioLogueado}></SinpePage>}/>
-      <Route path="/historial" element={<HistorialPage />}/>
+      <Route path="/historial" element={<HistorialPage usuario={usuarioLogueado} volverAlMenu={volverAlMenu}/>}/>
     </Routes>
   );
 }
