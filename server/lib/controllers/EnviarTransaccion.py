@@ -23,7 +23,7 @@ def enviar_sinpe():
         monto = float(data.get('monto', 0))
         num_destino = data.get('num_destino')
         detalle = data.get('detalle', 'Sin detalle')
-        fecha = datetime.datetime.now().strftime("%Y-%m-%d")
+        fecha = datetime.datetime.now().strftime("%d-%m-%Y")
         print("Emisor:", data.get('num_emisor'))
         print("Receptor:", data.get('num_destino'))
         print("Monto:", data.get('monto'))
@@ -57,7 +57,7 @@ def enviar_sinpe():
                 "status": "ERROR",
                 "message": "El campo 'monto' debe ser un número válido"
             }), 400
-        prefijo_destino = int(num_destino[:2])
+        prefijo_destino = num_destino[:2]
 
         if PREFIJO_LOCAL == prefijo_destino:
             connection, cursor = None, None
@@ -86,6 +86,7 @@ def enviar_sinpe():
                 id_receptor = get_id_usuario(cursor, num_destino)
 
                 # Registrar logs
+                fecha = datetime.datetime.today().strftime("%Y-%m-%d")
                 registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_emisor, fecha, "COMPLETADA: ENVÍO INTERNO")
                 registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_receptor, fecha, "COMPLETADA: RECEPCIÓN INTERNA")
                 
@@ -119,20 +120,22 @@ def enviar_sinpe():
                 print("Banco a enviar endpoint")
                 print(endpoint_url)
                 # Paso 2: Preparar cuerpo
+                
                 body = {
                     "num_emisor": num_emisor,
                     "key_emisor": KEY_EMISOR,
                     "num_receptor": num_destino,
                     "monto": monto,
-                    "detalle": detalle,
-                    "fecha": fecha
+                    "detalle": detalle
                 }
-                
+                print("Body")
+                print(body)
                 response_ext = requests.post(endpoint_url, json=body, verify=False)
                 respuesta_receptor = response_ext.json()
 
-                if response_ext.status_code == 200 and respuesta_receptor.get("status") == "OK":
+                if response_ext.status_code == 200:
                     # Confirmado por el receptor → actualizamos base local (rebajo al emisor)
+                    fecha = datetime.datetime.today().strftime("%Y-%m-%d")
                     connection, cursor = get_connection()
                     actualizar_monto(cursor, num_emisor, monto, operacion='-')
                     id_cliente = get_id_usuario(cursor, num_emisor)
@@ -147,6 +150,7 @@ def enviar_sinpe():
                     }), 200
                 else:
                     connection, cursor = get_connection()
+                    fecha = datetime.datetime.today().strftime("%Y-%m-%d")
                     id_cliente = get_id_usuario(cursor, num_emisor)
                     registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_cliente, fecha, "ERROR: TRANSACCION RECHAZA")
                     connection.commit()
@@ -164,4 +168,4 @@ def enviar_sinpe():
                 }), 500
 
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error inesperado: {str(e)}"}), 500
+        return jsonify({"status": "ERROR", "message": f"Error inesperado: {str(e)}"}), 404
