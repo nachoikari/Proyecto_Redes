@@ -24,10 +24,6 @@ def enviar_sinpe():
         num_destino = data.get('num_destino')
         detalle = data.get('detalle', 'Sin detalle')
         fecha = datetime.datetime.now().strftime("%d-%m-%Y")
-        print("Emisor:", data.get('num_emisor'))
-        print("Receptor:", data.get('num_destino'))
-        print("Monto:", data.get('monto'))
-        print("Detalle:", data.get('detalle'))
         required_fields = ['num_emisor',  'num_destino', 'detalle',  'monto']
         missing = [f for f in required_fields if f not in data]
         if missing:
@@ -58,7 +54,8 @@ def enviar_sinpe():
                 "message": "El campo 'monto' debe ser un número válido"
             }), 400
         prefijo_destino = num_destino[:2]
-
+        print("Prefijo")
+        print(prefijo_destino)
         if PREFIJO_LOCAL == prefijo_destino:
             connection, cursor = None, None
             try:
@@ -87,9 +84,28 @@ def enviar_sinpe():
 
                 # Registrar logs
                 fecha = datetime.datetime.today().strftime("%Y-%m-%d")
-                registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_emisor, fecha, "COMPLETADA: ENVÍO INTERNO")
-                registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_receptor, fecha, "COMPLETADA: RECEPCIÓN INTERNA")
-                
+                registrar_log_transaccion(
+                    cursor, 
+                    detalle=detalle,
+                    numero_emisor=num_emisor,
+                    numero_receptor=num_destino,
+                    id_cliente=id_emisor,
+                    fecha=fecha,
+                    monto=monto,
+                    estado="COMPLETADA: ENVÍO INTERNO"
+                )
+
+                registrar_log_transaccion(
+                    cursor,
+                    detalle=detalle,
+                    numero_emisor=num_emisor,
+                    numero_receptor=num_destino,
+                    id_cliente=id_receptor,
+                    fecha=fecha,
+                    monto=monto,
+                    estado="COMPLETADA: EXITOSA"
+                )
+
                 connection.commit()
                 close_connection(connection, cursor)
                 return jsonify({"status": "OK", "message": "Transferencia completada"}), 200
@@ -139,7 +155,16 @@ def enviar_sinpe():
                     connection, cursor = get_connection()
                     actualizar_monto(cursor, num_emisor, monto, operacion='-')
                     id_cliente = get_id_usuario(cursor, num_emisor)
-                    registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_cliente, fecha, "COMPLETADA: EXITOSA")
+                    registrar_log_transaccion(
+                        cursor,
+                        detalle=detalle,
+                        numero_emisor=num_emisor,
+                        numero_receptor=num_destino,
+                        id_cliente=id_cliente,
+                        fecha=fecha,
+                        monto=monto,
+                        estado="COMPLETADA: EXITOSA"
+                    )
                     connection.commit()
                     close_connection(connection, cursor)
 
@@ -152,7 +177,16 @@ def enviar_sinpe():
                     connection, cursor = get_connection()
                     fecha = datetime.datetime.today().strftime("%Y-%m-%d")
                     id_cliente = get_id_usuario(cursor, num_emisor)
-                    registrar_log_transaccion(cursor, detalle, num_emisor, num_destino, id_cliente, fecha, "ERROR: TRANSACCION RECHAZA")
+                    registrar_log_transaccion(
+                        cursor,
+                        detalle=detalle,
+                        numero_emisor=num_emisor,
+                        numero_receptor=num_destino,
+                        id_cliente=id_cliente,
+                        fecha=fecha,
+                        monto=monto,
+                        estado="ERROR: TRANSACCION RECHAZA"
+                    )
                     connection.commit()
                     close_connection(connection, cursor)
                     return jsonify({

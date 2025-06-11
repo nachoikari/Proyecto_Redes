@@ -70,6 +70,7 @@ def recibir_sinpe():
             numero_receptor=num_destino,
             id_cliente=id_receptor,
             fecha=fecha_convertida,
+            monto=monto,
             estado="COMPLETADA: RECEPCIÓN EXTERNA"
         )
 

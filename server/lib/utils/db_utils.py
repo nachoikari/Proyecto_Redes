@@ -30,11 +30,11 @@ def get_id_usuario(cursor, numero):
     result = cursor.fetchone()
     return result['idUsuario'] if result else None
 
-def registrar_log_transaccion(cursor, detalle, numero_emisor, numero_receptor, id_cliente, fecha, estado):
+def registrar_log_transaccion(cursor, detalle, numero_emisor, numero_receptor, id_cliente, fecha,monto, estado):
     query = """
         INSERT INTO log_transacciones 
-        (detalle, numero_emisor, numero_receptor, id_cliente, fecha_transaccion, estado_transaccion)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        (detalle, numero_emisor, numero_receptor, id_cliente, fecha_transaccion, monto,estado_transaccion)
+        VALUES (%s, %s, %s, %s, %s, %s,%s)
     """
-    values = (detalle, numero_emisor, numero_receptor, id_cliente, fecha, estado)
+    values = (detalle, numero_emisor, numero_receptor, id_cliente, fecha, monto,estado)
     cursor.execute(query, values)
